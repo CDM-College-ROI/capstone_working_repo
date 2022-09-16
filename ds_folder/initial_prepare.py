@@ -17,11 +17,7 @@ import os
     2. general_df = All qualitative and addl. data proposed for further exploration
     
     3. loan_df = All pertinent loan data (most likely used for Tableau Dashboard deliverable)
-
     '''
-
-# ----------------------------------------------------------------------------------# 
-
 
 def roi_df(df):
     roi_df = df[
@@ -260,7 +256,3 @@ def loan_df(df):
         'P_DEBT_ALL_PP_EVAL_MDN10YRPAY',
         'P_DEBT_ALL_STGP_EVAL_MDN10YRPAY'
     ]
-
-
-# ----------------------------------------------------------------------------------# 
-
