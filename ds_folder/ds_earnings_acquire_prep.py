@@ -36,9 +36,9 @@ def get_earnings_df():
         # created the necessary parent and child tables
         ipums_earnings = pd.read_csv(filename_01, low_memory = False)
 
-
         # cache the newly created dataframe as a .csv file
-        df.to_csv("majors_table.csv")
+        df.to_csv("earnings_df.csv")
+
         # print the df shape
         print(f'dataframe shape: {df.shape}')
 
