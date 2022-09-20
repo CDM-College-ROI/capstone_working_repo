@@ -256,3 +256,7 @@ def categorize_major(column):
         return "History"
     else:
         return "None"
+
+## Code to apply above function to our df, creating new `major_category` column/feature
+
+# --> new_df['major_category'] = new_df.major_name.apply(categorize_major)
