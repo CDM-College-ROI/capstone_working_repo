@@ -29,7 +29,7 @@ def get_earnings_df():
         return df
 
 
-    else:
+    # else:
         # checks local foldere for following files
         filename_01 = "ipums_earnings.csv"
         
