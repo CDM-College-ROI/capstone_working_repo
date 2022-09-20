@@ -101,6 +101,7 @@ def get_bach_df():
         bach_df = bach_df[[ 
                 "UNITID",
                 "INSTNM_x",
+                "CONTROL_x",
                 "STABBR",
                 "ZIP",
                 "CITY",
@@ -118,6 +119,9 @@ def get_bach_df():
                 "NPT4_PROG",
                 "NPT4_OTHER",
                 "NUM4_PRIV",
+                "TUITFTE",
+                "ROOMBOARD_OFF",
+                "ROOMBOARD_ON",
                 "ADM_RATE",
                 "GRADS",
                 "ACTCMMID",

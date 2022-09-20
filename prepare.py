@@ -26,6 +26,7 @@ def clean_college_df(df):
     new_df = new_df.rename(columns = { 
             "UNITID": "unit_id_institution",
             "INSTNM_x": "college_name",
+            "CONTROL_x": "institution_control",
             "STABBR": "state_post_code",
             "ZIP": "zip_code",
             "CITY": "city",
@@ -43,6 +44,9 @@ def clean_college_df(df):
             "NPT4_PROG": "avg_net_price_program",
             "NPT4_OTHER": "avg_net_price_other",
             "NUM4_PRIV": "title_IV_student_number",
+            "TUITFTE": "full_time_net_tuition_revenue",
+            "ROOMBOARD_OFF": "off_campus_cost_of_attendace",
+            "ROOMBOARD_ON": "on_campus_cost_of_attendace",
             "ADM_RATE": "admission_rate",
             "GRADS": "graduate_number",
             "ACTCMMID": "ACT_score_mid",
@@ -256,3 +260,7 @@ def categorize_major(column):
         return "History"
     else:
         return "None"
+
+## Code to apply above function to our df, creating new `major_category` column/feature
+
+# --> new_df['major_category'] = new_df.major_name.apply(categorize_major)
