@@ -9,64 +9,73 @@ import seaborn as sns
 sns.set()
 
 
-# data processing functions
+# data processing functions for dept. of education - college scorecard dataset
 # ---------------------------------------------------------------- #
 
 
-def clean_col_names(df):
-    '''Function to rename/clean columns names for easier readability.'''
+def clean_college_df(df):
+    '''Function to clean the intiail bachelor dataframe. This function takes 
+    in the bachelor dataframe and checks for instances of 'PrivacySuppressed' 
+    entries across the dataframe and replaces them with np.NaN.
 
-    new_df = df.rename(columns = { 
+    function also renames/cleans columns names for easier readability.'''
+
+    # rename omitted entry values
+    new_df = df.apply(lambda x: x.replace({'PrivacySuppressed': np.NaN}, regex=True))
+
+    new_df = new_df.rename(columns = { 
+            "UNITID": "unit_id_institution",
+            "INSTNM_x": "college_name",
+            "CONTROL_x": "institution_control",
+            "CITY": "city",
+            "STABBR": "state_post_code",
+            "ZIP": "zip_code",
+            "PFTFTUG1_EF": "share_entering_students_first_ft",
+            "PPTUG_EF": "share_of_part_time",
+            "PREDDEG": "pred_degree",
+            "REGION": "religion_ipeds",
+            "RET_FT4": "first_time_ft_student_retention",
+            "RET_PT4": "first_time_pt_student_retention",
+            "ROOMBOARD_OFF": "off_campus_cost_of_attendace",
+            "ROOMBOARD_ON": "on_campus_cost_of_attendace",
+            "SAT_AVG": "avg_sat_admitted",
+            "SCH_DEG": "pred_degree_0and4",
+            "TUITFTE": "full_time_net_tuition_revenue",
             "ACTCMMID": "ACT_score_mid",
             "ADM_RATE": "admission_rate",
             "ADMCON7": "required_score",
             "AVGFACSAL": "avg_faculty_salary",
-            "C150_4_2MOR": "comp_rt_ft_150over_expected_time_two_races",
-            "C150_4_AIAN": "comp_rt_ft_150over_expected_time_native_american",
-            "C150_4_ASIAN": "comp_rt_ft_150over_expected_time_asian",
-            "C150_4_BLACK": "comp_rt_ft_150over_expected_time_black",
-            "C150_4_HISP": "comp_rt_ft_150over_expected_time_hispanic",
-            "C150_4_NRA": "comp_rt_ft_150over_expected_time_non_resident",
-            "C150_4_UNKN": "comp_rt_ft_150over_expected_time_unknown_race",
-            "C150_4_WHITE": "comp_rt_ft_150over_expected_time_white",
-            "C150_4": "comp_rt_ft_150over_expected_time",
-            "CIPCODE": "major_code",
-            "CIPDESC": "major_name",
-            "CITY": "city",
             "CREDDESC": "degree_name",
             "CREDLEV": "degree_code",
-            "D_PCTPELL_PCTFLOAN": "undergraduate_number_pell_grant_fedral_loan",
-            "DEBT_ALL_PP_EVAL_MDN": "med_parent_and_loan",
-            "DEBT_ALL_PP_EVAL_MDN10YRPAY": "med_monthly_payment_parent_and_debt",
-            "DEBT_ALL_PP_EVAL_MEAN": "avg_parent_and_loan",
-            "DEBT_ALL_STGP_EVAL_MDN": "med_stafford_and_debt",
-            "DEBT_ALL_STGP_EVAL_MDN10YRPAY": "med_stafford_and_grad_debt",
-            "DEBT_ALL_STGP_EVAL_MEAN": "avg_stafford_and_debt",
-            "DEBT_MDN": "median_loan_repayment",
-            "DEBT_NOPELL_STGP_EVAL_MDN": "med_stafford_and_no_pell_recipients",
-            "DEBT_NOPELL_STGP_EVAL_MEAN": "avg_stafford_and_no_pell_recipients",
-            "DEBT_PELL_PP_EVAL_MDN": "med_parent_and_pell",
-            "DEBT_PELL_PP_EVAL_MEAN": "avg_parent_and_pell",
-            "DEBT_PELL_STGP_EVAL_MDN": "med_stafford_and_pell",
-            "DEBT_PELL_STGP_EVAL_MEAN": "avg_stafford_and_pell",
+            "CIPCODE": "major_code",
+            "CIPDESC": "major_name",
             "DISTANCEONLY": "online_only",
-            "FEMALE_DEBT_MDN": "median_debt_female",
-            "FIRSTGEN_DEBT_MDN": "median_debt_first_generation",
-            "FTFTPCTFLOAN": "fedral_loan_full_time_first_time_undergraduate",
-            "FTFTPCTPELL": "pell_grant_full_time_first_time_undergraduate",
-            "GRAD_DEBT_MDN": "median_debt_completed",
             "GRADS": "graduate_number",
-            "HI_INC_DEBT_MDN": "median_debt_75001+",
-            "IND_DEBT_MDN": "median_debt_independent",
-            "INSTNM_x": "college_name",
-            "LO_INC_DEBT_MDN": "median_debt_0_30000",
-            "MALE_DEBT_MDN": "median_debt_male",
-            "MD_INC_DEBT_MDN": "median_debt_30001_75000",
-            "NOPELL_DEBT_MDN": "median_debt_non_pell",
-            "NOTFIRSTGEN_DEBT_MDN": "median_debt_non_first_generation",
             "NUM4_PRIV": "title_IV_student_number",
             "NUMBRANCH": "branch_number",
+            "NPT4_PRIV": "avg_net_price_public",
+            "NPT4_PUB": "avg_net_price_private",
             "OPEFLAG": "title_IV_eligibility",
+            "NUM41_OTHER": "other_fam_income_0_30000",
+            "NUM41_PRIV": "private_fam_income_0_30000",
+            "NUM41_PROG": "program_fam_income_0_30000",
+            "NUM41_PUB": "pub_fam_income_0_30000",
+            "NUM42_OTHER": "other_fam_income_30001_48000",
+            "NUM42_PRIV": "private_fam_income_30001_48000",
+            "NUM42_PROG": "program_fam_income_30001_48000",
+            "NUM42_PUB": "pub_fam_income_30001_48000",
+            "NUM43_OTHER": "other_fam_income_48001_75000",
+            "NUM43_PRIV": "private_fam_income_48001_75000",
+            "NUM43_PROG": "program_fam_income_48001_75000",
+            "NUM43_PUB": "pub_fam_income_48001_75000",
+            "NUM44_OTHER": "other_fam_income_75001_110000",
+            "NUM44_PRIV": "private_fam_income_75001_110000",
+            "NUM44_PROG": "program_fam_income_75001_110000",
+            "NUM44_PUB": "pub_fam_income_75001_110000",
+            "NUM45_OTHER": "other_fam_income_over_110000",
+            "NUM45_PRIV": "private_fam_income_over_110000",
+            "NUM45_PROG": "program_fam_income_over_110000",
+            "NUM45_PUB": "pub_fam_income_over_110000",
             "PCIP01": "deg_percent_awarded_agriculture_operations",
             "PCIP03": "deg_percent_awarded_natural_resources",
             "PCIP04": "deg_percent_awarded_architecture",
@@ -105,16 +114,15 @@ def clean_col_names(df):
             "PCIP51": "deg_percent_awarded_health",
             "PCIP52": "deg_percent_awarded_business_management",
             "PCIP54": "deg_percent_awarded_history",
-            "PELL_DEBT_MDN": "med_debt_pell_students",
-            "PFTFTUG1_EF": "share_entering_students_first_ft",
-            "PPTUG_EF": "share_of_part_time",
-            "PREDDEG": "pred_degree",
-            "REGION": "religion_ipeds",
-            "RET_FT4": "first_time_ft_student_retention",
-            "RET_PT4": "first_time_pt_student_retention",
-            "SAT_AVG": "avg_sat_admitted",
-            "SCH_DEG": "pred_degree_0and4",
-            "STABBR": "state_post_code",
+            "C150_4_2MOR": "comp_rt_ft_150over_expected_time_two_races",
+            "C150_4_AIAN": "comp_rt_ft_150over_expected_time_native_american",
+            "C150_4_ASIAN": "comp_rt_ft_150over_expected_time_asian",
+            "C150_4_BLACK": "comp_rt_ft_150over_expected_time_black",
+            "C150_4_HISP": "comp_rt_ft_150over_expected_time_hispanic",
+            "C150_4_NRA": "comp_rt_ft_150over_expected_time_non_resident",
+            "C150_4_UNKN": "comp_rt_ft_150over_expected_time_unknown_race",
+            "C150_4_WHITE": "comp_rt_ft_150over_expected_time_white",
+            "C150_4": "comp_rt_ft_150over_expected_time",
             "UGDS_2MOR": "enrollment_share_two_races",
             "UGDS_AIAN": "enrollment_share_native_american",
             "UGDS_ASIAN": "enrollment_share_asian",
@@ -125,10 +133,22 @@ def clean_col_names(df):
             "UGDS_UNKN": "enrollment_share_unknown",
             "UGDS_WHITE": "enrollment_share_white",
             "UGNONDS": "non_deg_seeking",
-            "UNITID": "unit_id_institution",
+            "D_PCTPELL_PCTFLOAN": "undergraduate_number_pell_grant_fedral_loan",
+            "DEBT_MDN": "median_loan_repayment",
+            "PELL_DEBT_MDN": "med_debt_pell_students",
             "WDRAW_DEBT_MDN": "not_completed_med_debt",
-            "ZIP": "zip_code"
-
+            "FEMALE_DEBT_MDN": "median_debt_female",
+            "FIRSTGEN_DEBT_MDN": "median_debt_first_generation",
+            "IND_DEBT_MDN": "median_debt_independent",
+            "LO_INC_DEBT_MDN": "median_debt_0_30000",
+            "MALE_DEBT_MDN": "median_debt_male",
+            "MD_INC_DEBT_MDN": "median_debt_30001_75000",
+            "NOPELL_DEBT_MDN": "median_debt_non_pell",
+            "NOTFIRSTGEN_DEBT_MDN": "median_debt_non_first_generation",
+            "HI_INC_DEBT_MDN": "median_debt_75001+",
+            "GRAD_DEBT_MDN": "median_debt_completed",
+            "FTFTPCTFLOAN": "fedral_loan_full_time_first_time_undergraduate",
+            "FTFTPCTPELL": "pell_grant_full_time_first_time_undergraduate"
     })
 
     return new_df
@@ -148,17 +168,9 @@ def nulls_by_col(df):
     return cols_missing.sort_values(by='num_rows_missing', ascending=False)
 
 
-
-def clean_bach_df(df):
-    '''Function to clean the intiail bachelor dataframe. This function takes 
-    in the bachelor dataframe and checks for instances of 'PrivacySuppressed' 
-    entries across the dataframe and replaces them with np.NaN.
-
-    The function then combs through the df for cols with greater than 50% missing values, 
-    which are then dropped from the df and returns a new df.'''
-
-    # rename omitted entries
-    df = df.apply(lambda x: x.replace({'PrivacySuppressed': np.NaN}, regex=True))
+def treat_bach_nulls(df):
+    '''Function to comb through the df for cols with greater than 50% missing values, 
+    which are then dropped from the df and returned as a new df.'''
 
     # drop columns containing either 50% or more than 50% NaN Values
     perc = 50.0
