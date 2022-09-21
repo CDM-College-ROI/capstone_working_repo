@@ -178,9 +178,13 @@ def treat_bach_nulls(df):
     # return the new df
     return mod_df
 
+
+# ---------------------------------------------------------------- #
+                    ### Feature Engineering ###
 # ---------------------------------------------------------------- #
 
 
+# Placing all major titles from `major_name` within more concise buckets/categories for dimensionality reduction
 def categorize_major(column):
     if column in ['Botany/Plant Biology.','Agricultural Engineering.','Applied Horticulture and Horticultural Business Services.','Agriculture/Veterinary Preparatory Programs.','Soil Sciences.','Agriculture, General.', 'Agriculture, Agriculture Operations, and Related Sciences, Other.', 'Agricultural Production Operations.', 'Agricultural and Domestic Animal Services.','Agricultural Public Services.','Agricultural Mechanization.','International Agriculture.','Agricultural and Food Products Processing.']:
         return "Agriculture"
@@ -264,3 +268,54 @@ def categorize_major(column):
 ## Code to apply above function to our df, creating new `major_category` column/feature
 
 # --> new_df['major_category'] = new_df.major_name.apply(categorize_major)
+
+
+
+# ----------------------------------- #
+
+### Target Variable: ROI ###
+
+''' These features intake calculated median earnings data from our secondary IPUMS dataset by year (`median_earnings_by_degree`), 
+net college cost of a typical 4-yr bachelors degree, and predicted counter earnings had an individual not pursued this degree. 
+It utilizes a standard ROI formula calculation to engineer new ROI vars for 5, 10, and 20 years.
+This is our primary target variable'''
+
+# 5-yr ROI 
+
+def roi_5yr(df):
+
+    # creating median earnings var
+    median_earnings_by_degree_5yr = (df['2017'] + df['2018'] + df['2019'] + df['2019']*1.02 + (df['2019']*1.02)*1.02)
+
+    # net college cost var
+    net_college_cost = df['avg_net_price']
+
+    # counter earnings var (what is the predicted wage an individual would have earned had they foregone pursuing this degree)
+    counter_earnings_5yr = (39070*9)
+
+    # ROI formula calculation
+    df['roi_5yr'] = median_earnings_by_degree_5yr - (net_college_cost+counter_earnings_5yr)
+
+    return df
+
+
+# 10-yr ROI
+
+def roi_10yr(df):
+
+    # creating median earnings var
+    median_earnings_by_degree_10yr = df['2017'] + df['2018'] + df['2019'] + df['2019']*1.02 + (df['2019']*1.02)*1.02 + ((df['2019']*1.02)*1.02)*1.02 + (((df['2019']*1.02)*1.02)*1.02)*1.02 + ((((df['2019']*1.02)*1.02)*1.02)*1.02)*1.02 + (((((df['2019']*1.02)*1.02)*1.02)*1.02)*1.02)*1.02 + ((((((df['2019']*1.02)*1.02)*1.02)*1.02)*1.02)*1.02)*1.02
+
+    # net college cost var
+    net_college_cost = df['avg_net_price']
+
+    # counter earnings var (what is the predicted wage an individual would have earned had they foregone pursuing this degree)
+    counter_earnings_10yr = (39070*14)
+
+    # ROI formula calculation
+    df['roi_10yr'] = median_earnings_by_degree_10yr - (net_college_cost+ counter_earnings_10yr)
+
+    return df
+
+
+# ----------------------------------- #
