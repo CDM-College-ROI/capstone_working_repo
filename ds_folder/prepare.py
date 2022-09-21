@@ -43,6 +43,26 @@ def clean_college_df(df):
             "NPT4_PRIV": "avg_net_price_private",
             "NPT4_PROG": "avg_net_price_program",
             "NPT4_OTHER": "avg_net_price_other",
+            'NUM41_PUB':'pub_fam_income_0_30000',
+            'NUM41_PRIV':'private_fam_income_0_30000',
+            'NUM41_PROG':'program_fam_income_0_30000',
+            'NUM41_OTHER':'other_fam_income_0_30000',
+            'NUM42_PUB':'pub_fam_income_30001_48000',
+            'NUM42_PRIV':'private_fam_income_30001_48000',
+            'NUM42_PROG':'program_fam_income_30001_48000',
+            'NUM42_OTHER':'other_fam_income_30001_48000',
+            'NUM43_PUB':'pub_fam_income_48001_75000',
+            'NUM43_PRIV':'private_fam_income_48001_75000',
+            'NUM43_PROG':'program_fam_income_48001_75000',
+            'NUM43_OTHER':'other_fam_income_48001_75000',
+            'NUM44_PUB':'pub_fam_income_75001_110000',
+            'NUM44_PRIV':'private_fam_income_75001_110000',
+            'NUM44_PROG':'program_fam_income_75001_110000',
+            'NUM44_OTHER':'other_fam_income_75001_110000',
+            'NUM45_PUB':'pub_fam_income_over_110000',
+            'NUM45_PRIV':'private_fam_income_over_110000',
+            'NUM45_PROG':'program_fam_income_over_110000',
+            'NUM45_OTHER':'other_fam_income_over_110000',
             "NUM4_PRIV": "title_IV_student_number",
             "TUITFTE": "full_time_net_tuition_revenue",
             "ROOMBOARD_OFF": "off_campus_cost_of_attendace",
@@ -148,6 +168,9 @@ def clean_college_df(df):
     return new_df
 
 
+#### ------------------------------------- ####
+# 
+
 def nulls_by_col(df):
     '''Function to return percentage of missing values by feature.'''
 
@@ -178,9 +201,59 @@ def treat_bach_nulls(df):
     # return the new df
     return mod_df
 
+
+#### ------------------------------------- ####
+    ### Additional Cleaning Functions ### 
+
+# Dropping 100% null rows and dropping null `city` subset (which is universally null for vast quantity key features)
+def clean_step1(df):
+    cols = ['avg_net_price_program','avg_net_price_other']
+    df = df.drop(columns = cols)
+    df = df.dropna(subset=['city'])
+    return df
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ---------------------------------------------------------------- #
+                    ### Feature Engineering ###
 # ---------------------------------------------------------------- #
 
 
+# 
+
+def avg_net_price(df):
+
+    '''Function that creates a new 'average net price' column from 
+    existing avg net public and private columns.
+    
+    This function takes in a dataframe and re-labels null values as 0 in order
+    to add across the two avg net price observations.'''
+
+    df['avg_net_price_public'] = df['avg_net_price_public'].fillna(0)
+
+    df['avg_net_price_private'] = df['avg_net_price_private'].fillna(0)
+
+    df['avg_net_price'] = df.avg_net_price_public + df.avg_net_price_private
+
+    # return the dataframe
+    return df
+
+
+
+# Placing all major titles from `major_name` within more concise buckets/categories for dimensionality reduction
 def categorize_major(column):
     if column in ['Botany/Plant Biology.','Agricultural Engineering.','Applied Horticulture and Horticultural Business Services.','Agriculture/Veterinary Preparatory Programs.','Soil Sciences.','Agriculture, General.', 'Agriculture, Agriculture Operations, and Related Sciences, Other.', 'Agricultural Production Operations.', 'Agricultural and Domestic Animal Services.','Agricultural Public Services.','Agricultural Mechanization.','International Agriculture.','Agricultural and Food Products Processing.']:
         return "Agriculture"
@@ -264,3 +337,127 @@ def categorize_major(column):
 ## Code to apply above function to our df, creating new `major_category` column/feature
 
 # --> new_df['major_category'] = new_df.major_name.apply(categorize_major)
+
+
+# ----------------------------------- #
+
+### Additional Steps to perform merge with `earnings_pivot_merge` df
+
+def earnings_merge(df):
+    # Reading in csv of earnings pivot table (creation of Chenchen)
+    earnings_pivot_merge = pd.read_csv('2017_2018_2019_earning_by_major.csv', index_col=0)
+
+    # Merging cleaned/prepared df with earnings pivot table
+    df = df.merge(earnings_pivot_merge, how='inner', on='major_category')
+
+    return df
+
+
+
+
+
+
+
+
+
+
+# ----------------------------------- #
+
+### Target Variable: ROI ###
+
+''' These features intake calculated median earnings data from our secondary IPUMS dataset by year (`median_earnings_by_degree`), 
+net college cost of a typical 4-yr bachelors degree, and predicted counter earnings had an individual not pursued this degree. 
+It utilizes a standard ROI formula calculation to engineer new ROI vars for 5, 10, and 20 years.
+This is our primary target variable'''
+
+# 5-yr ROI 
+
+def roi_5yr(df):
+
+    # creating median earnings var
+    median_earnings_by_degree_5yr = (df['2017'] + df['2018'] + df['2019'] + df['2019']*1.02 + (df['2019']*1.02)*1.02)
+
+    # net college cost var
+    net_college_cost = df['avg_net_price']
+
+    # counter earnings var (what is the predicted wage an individual would have earned had they foregone pursuing this degree)
+    counter_earnings_5yr = (39070*9)
+
+    # ROI formula calculation
+    df['roi_5yr'] = median_earnings_by_degree_5yr - (net_college_cost+counter_earnings_5yr)
+
+    return df
+
+
+# 10-yr ROI
+
+def roi_10yr(df):
+
+    # creating median earnings var
+    median_earnings_by_degree_10yr = df['2017'] + df['2018'] + df['2019'] + df['2019']*1.02 + (df['2019']*1.02)*1.02 + ((df['2019']*1.02)*1.02)*1.02 + (((df['2019']*1.02)*1.02)*1.02)*1.02 + ((((df['2019']*1.02)*1.02)*1.02)*1.02)*1.02 + (((((df['2019']*1.02)*1.02)*1.02)*1.02)*1.02)*1.02 + ((((((df['2019']*1.02)*1.02)*1.02)*1.02)*1.02)*1.02)*1.02
+
+    # net college cost var
+    net_college_cost = df['avg_net_price']
+
+    # counter earnings var (what is the predicted wage an individual would have earned had they foregone pursuing this degree)
+    counter_earnings_10yr = (39070*14)
+
+    # ROI formula calculation
+    df['roi_10yr'] = median_earnings_by_degree_10yr - (net_college_cost+ counter_earnings_10yr)
+
+    return df
+
+
+# ----------------------------------- #
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ---------------------------------------------------------------- #
+                    ### Train, Validate, Test Split ###
+# ---------------------------------------------------------------- #
+
+
+def split_data(df):
+    train_and_validate, test = train_test_split(
+        df, 
+        test_size = 0.2, 
+        random_state = 123,
+        stratify = df["major_category"])
+
+    train, validate = train_test_split(
+        train_and_validate,
+        test_size = 0.3,
+        random_state = 123,
+        stratify = train_and_validate["major_category"])
+
+    return df
+
+
+                                    
+
+
+
+
+
+
+
+
+
+

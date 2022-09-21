@@ -43,6 +43,26 @@ def clean_college_df(df):
             "NPT4_PRIV": "avg_net_price_private",
             "NPT4_PROG": "avg_net_price_program",
             "NPT4_OTHER": "avg_net_price_other",
+            'NUM41_PUB':'pub_fam_income_0_30000',
+            'NUM41_PRIV':'private_fam_income_0_30000',
+            'NUM41_PROG':'program_fam_income_0_30000',
+            'NUM41_OTHER':'other_fam_income_0_30000',
+            'NUM42_PUB':'pub_fam_income_30001_48000',
+            'NUM42_PRIV':'private_fam_income_30001_48000',
+            'NUM42_PROG':'program_fam_income_30001_48000',
+            'NUM42_OTHER':'other_fam_income_30001_48000',
+            'NUM43_PUB':'pub_fam_income_48001_75000',
+            'NUM43_PRIV':'private_fam_income_48001_75000',
+            'NUM43_PROG':'program_fam_income_48001_75000',
+            'NUM43_OTHER':'other_fam_income_48001_75000',
+            'NUM44_PUB':'pub_fam_income_75001_110000',
+            'NUM44_PRIV':'private_fam_income_75001_110000',
+            'NUM44_PROG':'program_fam_income_75001_110000',
+            'NUM44_OTHER':'other_fam_income_75001_110000',
+            'NUM45_PUB':'pub_fam_income_over_110000',
+            'NUM45_PRIV':'private_fam_income_over_110000',
+            'NUM45_PROG':'program_fam_income_over_110000',
+            'NUM45_OTHER':'other_fam_income_over_110000',
             "NUM4_PRIV": "title_IV_student_number",
             "TUITFTE": "full_time_net_tuition_revenue",
             "ROOMBOARD_OFF": "off_campus_cost_of_attendace",
@@ -148,6 +168,9 @@ def clean_college_df(df):
     return new_df
 
 
+#### ------------------------------------- ####
+# 
+
 def nulls_by_col(df):
     '''Function to return percentage of missing values by feature.'''
 
@@ -179,9 +202,55 @@ def treat_bach_nulls(df):
     return mod_df
 
 
+#### ------------------------------------- ####
+    ### Additional Cleaning Functions ### 
+
+# Dropping 100% null rows and dropping null `city` subset (which is universally null for vast quantity key features)
+def clean_step1(df):
+    cols = ['avg_net_price_program','avg_net_price_other']
+    df = df.drop(columns = cols)
+    df = df.dropna(subset=['city'])
+    return df
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # ---------------------------------------------------------------- #
                     ### Feature Engineering ###
 # ---------------------------------------------------------------- #
+
+
+# 
+
+def avg_net_price(df):
+
+    '''Function that creates a new 'average net price' column from 
+    existing avg net public and private columns.
+    
+    This function takes in a dataframe and re-labels null values as 0 in order
+    to add across the two avg net price observations.'''
+
+    df['avg_net_price_public'] = df['avg_net_price_public'].fillna(0)
+
+    df['avg_net_price_private'] = df['avg_net_price_private'].fillna(0)
+
+    df['avg_net_price'] = df.avg_net_price_public + df.avg_net_price_private
+
+    # return the dataframe
+    return df
+
 
 
 # Placing all major titles from `major_name` within more concise buckets/categories for dimensionality reduction
@@ -270,6 +339,27 @@ def categorize_major(column):
 # --> new_df['major_category'] = new_df.major_name.apply(categorize_major)
 
 
+# ----------------------------------- #
+
+### Additional Steps to perform merge with `earnings_pivot_merge` df
+
+def earnings_merge(df):
+    # Reading in csv of earnings pivot table (creation of Chenchen)
+    earnings_pivot_merge = pd.read_csv('2017_2018_2019_earning_by_major.csv', index_col=0)
+
+    # Merging cleaned/prepared df with earnings pivot table
+    df = df.merge(earnings_pivot_merge, how='inner', on='major_category')
+
+    return df
+
+
+
+
+
+
+
+
+
 
 # ----------------------------------- #
 
@@ -319,3 +409,55 @@ def roi_10yr(df):
 
 
 # ----------------------------------- #
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ---------------------------------------------------------------- #
+                    ### Train, Validate, Test Split ###
+# ---------------------------------------------------------------- #
+
+
+def split_data(df):
+    train_and_validate, test = train_test_split(
+        df, 
+        test_size = 0.2, 
+        random_state = 123,
+        stratify = df["major_category"])
+
+    train, validate = train_test_split(
+        train_and_validate,
+        test_size = 0.3,
+        random_state = 123,
+        stratify = train_and_validate["major_category"])
+
+    return df
+
+
+                                    
+
+
+
+
+
+
+
+
+
+
