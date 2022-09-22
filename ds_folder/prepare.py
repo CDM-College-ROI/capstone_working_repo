@@ -378,13 +378,24 @@ def roi_5yr(df):
     median_earnings_by_degree_5yr = (df['2017'] + df['2018'] + df['2019'] + df['2019']*1.02 + (df['2019']*1.02)*1.02)
 
     # net college cost var
-    net_college_cost = df['avg_net_price']
+    net_college_cost = df['avg_net_price']*4
 
     # counter earnings var (what is the predicted wage an individual would have earned had they foregone pursuing this degree)
-    counter_earnings_5yr = (39070*9)
+    counter_earnings = (39070*4)
+
+    # 
+    net_cost_of_investment = (net_college_cost + counter_earnings)
+
+    #
+    net_return_on_investment_5yr = median_earnings_by_degree_5yr - net_cost_of_investment
+
 
     # ROI formula calculation
-    df['roi_5yr'] = median_earnings_by_degree_5yr - (net_college_cost+counter_earnings_5yr)
+    df['roi_5yr'] = net_return_on_investment_5yr / net_cost_of_investment
+
+
+    # ROI calculation as a percentage
+    df['pct_roi_5yr'] = (net_return_on_investment_5yr / net_cost_of_investment) * 100
 
     return df
 
@@ -397,13 +408,68 @@ def roi_10yr(df):
     median_earnings_by_degree_10yr = df['2017'] + df['2018'] + df['2019'] + df['2019']*1.02 + (df['2019']*1.02)*1.02 + ((df['2019']*1.02)*1.02)*1.02 + (((df['2019']*1.02)*1.02)*1.02)*1.02 + ((((df['2019']*1.02)*1.02)*1.02)*1.02)*1.02 + (((((df['2019']*1.02)*1.02)*1.02)*1.02)*1.02)*1.02 + ((((((df['2019']*1.02)*1.02)*1.02)*1.02)*1.02)*1.02)*1.02
 
     # net college cost var
-    net_college_cost = df['avg_net_price']
+    net_college_cost = df['avg_net_price']*4
 
     # counter earnings var (what is the predicted wage an individual would have earned had they foregone pursuing this degree)
-    counter_earnings_10yr = (39070*14)
+    counter_earnings = (39070*4)
+
+    # 
+    net_cost_of_investment = (net_college_cost + counter_earnings)
+
+    #
+    net_return_on_investment_10yr = median_earnings_by_degree_10yr - net_cost_of_investment
+
 
     # ROI formula calculation
-    df['roi_10yr'] = median_earnings_by_degree_10yr - (net_college_cost+ counter_earnings_10yr)
+    df['roi_10yr'] = net_return_on_investment_10yr / net_cost_of_investment
+
+    # ROI calculation as a percentage
+    df['pct_roi_10yr'] = (net_return_on_investment_10yr / net_cost_of_investment) * 100
+
+    return df
+
+
+
+# 20-yr ROI
+
+def roi_20yr(df):
+
+    # creating median earnings var                                                                                                                                                                                          yr10                   yr11                                                                                     yr15
+    median_earnings_by_degree_20yr = df['2017'] + df['2018'] + df['2019'] + df['2019']*1.02 + df['2019']*(1.02**2) + df['2019']*(1.02**3) + df['2019']*(1.02**4) + df['2019']*(1.02**5) + df['2019']*(1.02**6) + df['2019']*(1.02**7) + df['2019']*(1.02**8) + df['2019']*(1.02**9) + df['2019']*(1.02**10) + df['2019']*(1.02**11) + df['2019']*(1.02**12) + df['2019']*(1.02**13) + df['2019']*(1.02**14) + df['2019']*(1.02**15) + df['2019']*(1.02**16) + df['2019']*(1.02**17)
+
+    # net college cost var
+    net_college_cost = df['avg_net_price']*4
+
+    # counter earnings var (what is the predicted wage an individual would have earned had they foregone pursuing this degree)
+    counter_earnings = (39070*4)
+
+    # 
+    net_cost_of_investment = (net_college_cost + counter_earnings)
+
+    #
+    net_return_on_investment_20yr = median_earnings_by_degree_20yr - net_cost_of_investment
+
+
+    # ROI formula calculation
+    df['roi_20yr'] = net_return_on_investment_20yr / net_cost_of_investment
+
+    # ROI calculation as a percentage
+    df['pct_roi_20yr'] = (net_return_on_investment_20yr / net_cost_of_investment) * 100
+
+    return df
+
+
+### Master function for all roi vars ###
+def create_roi_cols(df):
+
+    # Calling roi_5yr function
+    df = roi_5yr(df)
+
+    # Calling roi_10yr function
+    df = roi_10yr(df)
+
+    # Calling roi_10yr function
+    df = roi_20yr(df)
 
     return df
 
