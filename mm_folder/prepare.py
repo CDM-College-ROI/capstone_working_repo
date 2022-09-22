@@ -27,55 +27,103 @@ def clean_college_df(df):
             "UNITID": "unit_id_institution",
             "INSTNM_x": "college_name",
             "CONTROL_x": "institution_control",
-            "CITY": "city",
             "STABBR": "state_post_code",
             "ZIP": "zip_code",
-            "PFTFTUG1_EF": "share_entering_students_first_ft",
-            "PPTUG_EF": "share_of_part_time",
+            "CITY": "city",
+            "REGION": "region_ipeds",
+            "OPEFLAG": "title_IV_eligibility",
             "PREDDEG": "pred_degree",
-            "REGION": "religion_ipeds",
-            "RET_FT4": "first_time_ft_student_retention",
-            "RET_PT4": "first_time_pt_student_retention",
-            "ROOMBOARD_OFF": "off_campus_cost_of_attendace",
-            "ROOMBOARD_ON": "on_campus_cost_of_attendace",
-            "SAT_AVG": "avg_sat_admitted",
             "SCH_DEG": "pred_degree_0and4",
-            "TUITFTE": "full_time_net_tuition_revenue",
-            "ACTCMMID": "ACT_score_mid",
-            "ADM_RATE": "admission_rate",
-            "ADMCON7": "required_score",
-            "AVGFACSAL": "avg_faculty_salary",
             "CREDDESC": "degree_name",
             "CREDLEV": "degree_code",
             "CIPCODE": "major_code",
             "CIPDESC": "major_name",
-            "DISTANCEONLY": "online_only",
-            "GRADS": "graduate_number",
-            "NUM4_PRIV": "title_IV_student_number",
             "NUMBRANCH": "branch_number",
-            "NPT4_PRIV": "avg_net_price_public",
-            "NPT4_PUB": "avg_net_price_private",
-            "OPEFLAG": "title_IV_eligibility",
-            "NUM41_OTHER": "other_fam_income_0_30000",
-            "NUM41_PRIV": "private_fam_income_0_30000",
-            "NUM41_PROG": "program_fam_income_0_30000",
-            "NUM41_PUB": "pub_fam_income_0_30000",
-            "NUM42_OTHER": "other_fam_income_30001_48000",
-            "NUM42_PRIV": "private_fam_income_30001_48000",
-            "NUM42_PROG": "program_fam_income_30001_48000",
-            "NUM42_PUB": "pub_fam_income_30001_48000",
-            "NUM43_OTHER": "other_fam_income_48001_75000",
-            "NUM43_PRIV": "private_fam_income_48001_75000",
-            "NUM43_PROG": "program_fam_income_48001_75000",
-            "NUM43_PUB": "pub_fam_income_48001_75000",
-            "NUM44_OTHER": "other_fam_income_75001_110000",
-            "NUM44_PRIV": "private_fam_income_75001_110000",
-            "NUM44_PROG": "program_fam_income_75001_110000",
-            "NUM44_PUB": "pub_fam_income_75001_110000",
-            "NUM45_OTHER": "other_fam_income_over_110000",
-            "NUM45_PRIV": "private_fam_income_over_110000",
-            "NUM45_PROG": "program_fam_income_over_110000",
-            "NUM45_PUB": "pub_fam_income_over_110000",
+            "NPT4_PUB": "avg_net_price_public",
+            "NPT4_PRIV": "avg_net_price_private",
+            "NPT4_PROG": "avg_net_price_program",
+            "NPT4_OTHER": "avg_net_price_other",
+            'NUM41_PUB':'pub_fam_income_0_30000',
+            'NUM41_PRIV':'private_fam_income_0_30000',
+            'NUM41_PROG':'program_fam_income_0_30000',
+            'NUM41_OTHER':'other_fam_income_0_30000',
+            'NUM42_PUB':'pub_fam_income_30001_48000',
+            'NUM42_PRIV':'private_fam_income_30001_48000',
+            'NUM42_PROG':'program_fam_income_30001_48000',
+            'NUM42_OTHER':'other_fam_income_30001_48000',
+            'NUM43_PUB':'pub_fam_income_48001_75000',
+            'NUM43_PRIV':'private_fam_income_48001_75000',
+            'NUM43_PROG':'program_fam_income_48001_75000',
+            'NUM43_OTHER':'other_fam_income_48001_75000',
+            'NUM44_PUB':'pub_fam_income_75001_110000',
+            'NUM44_PRIV':'private_fam_income_75001_110000',
+            'NUM44_PROG':'program_fam_income_75001_110000',
+            'NUM44_OTHER':'other_fam_income_75001_110000',
+            'NUM45_PUB':'pub_fam_income_over_110000',
+            'NUM45_PRIV':'private_fam_income_over_110000',
+            'NUM45_PROG':'program_fam_income_over_110000',
+            'NUM45_OTHER':'other_fam_income_over_110000',
+            "NUM4_PRIV": "title_IV_student_number",
+            "TUITFTE": "full_time_net_tuition_revenue",
+            "ROOMBOARD_OFF": "off_campus_cost_of_attendace",
+            "ROOMBOARD_ON": "on_campus_cost_of_attendace",
+            "ADM_RATE": "admission_rate",
+            "GRADS": "graduate_number",
+            "ACTCMMID": "ACT_score_mid",
+            "SAT_AVG": "avg_sat_admitted",
+            "ADMCON7": "required_score",
+            "AVGFACSAL": "avg_faculty_salary",
+            "DISTANCEONLY": "online_only",
+            "C150_4": "comp_rt_ft_150over_expected_time",
+            "C150_4_2MOR": "comp_rt_ft_150over_expected_time_two_races",
+            "C150_4_AIAN": "comp_rt_ft_150over_expected_time_native_american",
+            "C150_4_ASIAN": "comp_rt_ft_150over_expected_time_asian",
+            "C150_4_BLACK": "comp_rt_ft_150over_expected_time_black",
+            "C150_4_HISP": "comp_rt_ft_150over_expected_time_hispanic",
+            "C150_4_NRA": "comp_rt_ft_150over_expected_time_non_resident",
+            "C150_4_UNKN": "comp_rt_ft_150over_expected_time_unknown_race",
+            "C150_4_WHITE": "comp_rt_ft_150over_expected_time_white",
+            "PFTFTUG1_EF": "share_entering_students_first_ft",
+            "PPTUG_EF": "share_of_part_time",
+            "RET_FT4": "first_time_ft_student_retention",
+            "RET_PT4": "first_time_pt_student_retention",
+            "UGDS_2MOR": "enrollment_share_two_races",
+            "UGDS_AIAN": "enrollment_share_native_american",
+            "UGDS_ASIAN": "enrollment_share_asian",
+            "UGDS_BLACK": "enrollment_share_black",
+            "UGDS_HISP": "enrollment_share_hispanic",
+            "UGDS_NHPI": "enrollment_share_pac_islander",
+            "UGDS_NRA": "enrollment_share_non_resident",
+            "UGDS_UNKN": "enrollment_share_unknown",
+            "UGDS_WHITE": "enrollment_share_white",
+            "D_PCTPELL_PCTFLOAN": "undergraduate_number_pell_grant_fedral_loan",
+            "DEBT_MDN": "median_loan_repayment",
+            "PELL_DEBT_MDN": "med_debt_pell_students",
+            "LO_INC_DEBT_MDN": "median_debt_0_30000",
+            "MD_INC_DEBT_MDN": "median_debt_30001_75000",
+            "HI_INC_DEBT_MDN": "median_debt_75001+",
+            "GRAD_DEBT_MDN": "median_debt_completed",
+            "WDRAW_DEBT_MDN": "not_completed_med_debt",
+            "MALE_DEBT_MDN": "median_debt_male",
+            "FEMALE_DEBT_MDN": "median_debt_female",
+            "IND_DEBT_MDN": "median_debt_independent",
+            "FIRSTGEN_DEBT_MDN": "median_debt_first_generation",
+            "NOTFIRSTGEN_DEBT_MDN": "median_debt_non_first_generation",
+            "NOPELL_DEBT_MDN": "median_debt_non_pell",
+            "FTFTPCTFLOAN": "fedral_loan_full_time_first_time_undergraduate",
+            "FTFTPCTPELL": "pell_grant_full_time_first_time_undergraduate",
+            "DEBT_PELL_PP_EVAL_MDN": "med_parent_and_pell",
+            "DEBT_PELL_PP_EVAL_MEAN": "avg_parent_and_pell",
+            "DEBT_PELL_STGP_EVAL_MDN": "med_stafford_and_pell",
+            "DEBT_PELL_STGP_EVAL_MEAN": "avg_stafford_and_pell",
+            "DEBT_ALL_PP_EVAL_MDN": "med_parent_and_loan",
+            "DEBT_ALL_PP_EVAL_MEAN": "avg_parent_and_loan",
+            "DEBT_ALL_STGP_EVAL_MDN": "med_stafford_and_debt",
+            "DEBT_ALL_STGP_EVAL_MEAN": "avg_stafford_and_debt",
+            "DEBT_ALL_STGP_EVAL_MDN10YRPAY": "med_stafford_and_grad_debt",
+            "DEBT_NOPELL_STGP_EVAL_MDN": "med_stafford_and_no_pell_recipients",
+            "DEBT_NOPELL_STGP_EVAL_MEAN": "avg_stafford_and_no_pell_recipients",
+            "DEBT_ALL_PP_EVAL_MDN10YRPAY": "med_monthly_payment_parent_and_debt",
             "PCIP01": "deg_percent_awarded_agriculture_operations",
             "PCIP03": "deg_percent_awarded_natural_resources",
             "PCIP04": "deg_percent_awarded_architecture",
@@ -94,7 +142,7 @@ def clean_college_df(df):
             "PCIP24": "deg_percent_awarded_general_studies",
             "PCIP25": "deg_percent_awarded_library_sciences",
             "PCIP26": "deg_percent_awarded_bio_sciences",
-            "PCIP27": "deg_percent_awarded_history",
+            "PCIP27": "deg_percent_awarded_mathematics_and_stats",
             "PCIP29": "deg_percent_awarded_military_tech",
             "PCIP30": "deg_percent_awarded_intedisciplinary_studies",
             "PCIP31": "deg_percent_awarded_leisure_fitness",
@@ -114,45 +162,14 @@ def clean_college_df(df):
             "PCIP51": "deg_percent_awarded_health",
             "PCIP52": "deg_percent_awarded_business_management",
             "PCIP54": "deg_percent_awarded_history",
-            "C150_4_2MOR": "comp_rt_ft_150over_expected_time_two_races",
-            "C150_4_AIAN": "comp_rt_ft_150over_expected_time_native_american",
-            "C150_4_ASIAN": "comp_rt_ft_150over_expected_time_asian",
-            "C150_4_BLACK": "comp_rt_ft_150over_expected_time_black",
-            "C150_4_HISP": "comp_rt_ft_150over_expected_time_hispanic",
-            "C150_4_NRA": "comp_rt_ft_150over_expected_time_non_resident",
-            "C150_4_UNKN": "comp_rt_ft_150over_expected_time_unknown_race",
-            "C150_4_WHITE": "comp_rt_ft_150over_expected_time_white",
-            "C150_4": "comp_rt_ft_150over_expected_time",
-            "UGDS_2MOR": "enrollment_share_two_races",
-            "UGDS_AIAN": "enrollment_share_native_american",
-            "UGDS_ASIAN": "enrollment_share_asian",
-            "UGDS_BLACK": "enrollment_share_black",
-            "UGDS_HISP": "enrollment_share_hispanic",
-            "UGDS_NHPI": "enrollment_share_pac_islander",
-            "UGDS_NRA": "enrollment_share_non_resident",
-            "UGDS_UNKN": "enrollment_share_unknown",
-            "UGDS_WHITE": "enrollment_share_white",
-            "UGNONDS": "non_deg_seeking",
-            "D_PCTPELL_PCTFLOAN": "undergraduate_number_pell_grant_fedral_loan",
-            "DEBT_MDN": "median_loan_repayment",
-            "PELL_DEBT_MDN": "med_debt_pell_students",
-            "WDRAW_DEBT_MDN": "not_completed_med_debt",
-            "FEMALE_DEBT_MDN": "median_debt_female",
-            "FIRSTGEN_DEBT_MDN": "median_debt_first_generation",
-            "IND_DEBT_MDN": "median_debt_independent",
-            "LO_INC_DEBT_MDN": "median_debt_0_30000",
-            "MALE_DEBT_MDN": "median_debt_male",
-            "MD_INC_DEBT_MDN": "median_debt_30001_75000",
-            "NOPELL_DEBT_MDN": "median_debt_non_pell",
-            "NOTFIRSTGEN_DEBT_MDN": "median_debt_non_first_generation",
-            "HI_INC_DEBT_MDN": "median_debt_75001+",
-            "GRAD_DEBT_MDN": "median_debt_completed",
-            "FTFTPCTFLOAN": "fedral_loan_full_time_first_time_undergraduate",
-            "FTFTPCTPELL": "pell_grant_full_time_first_time_undergraduate"
-    })
+            "UGNONDS": "non_deg_seeking"
+        })
 
     return new_df
 
+
+#### ------------------------------------- ####
+# 
 
 def nulls_by_col(df):
     '''Function to return percentage of missing values by feature.'''
@@ -184,14 +201,60 @@ def treat_bach_nulls(df):
     # return the new df
     return mod_df
 
+
+#### ------------------------------------- ####
+    ### Additional Cleaning Functions ### 
+
+# Dropping 100% null rows and dropping null `city` subset (which is universally null for vast quantity key features)
+def clean_step1(df):
+    cols = ['avg_net_price_program','avg_net_price_other']
+    df = df.drop(columns = cols)
+    df = df.dropna(subset=['city'])
+    return df
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ---------------------------------------------------------------- #
+                    ### Feature Engineering ###
 # ---------------------------------------------------------------- #
 
 
-def categorize_major(column):
-    '''Function takes in the college 'major_name' column and 
-    creates a new binned college majors column assigning a categorical major
-    to ea. record.'''
+# 
 
+def avg_net_price(df):
+
+    '''Function that creates a new 'average net price' column from 
+    existing avg net public and private columns.
+    
+    This function takes in a dataframe and re-labels null values as 0 in order
+    to add across the two avg net price observations.'''
+
+    df['avg_net_price_public'] = df['avg_net_price_public'].fillna(0)
+
+    df['avg_net_price_private'] = df['avg_net_price_private'].fillna(0)
+
+    df['avg_net_price'] = df.avg_net_price_public + df.avg_net_price_private
+
+    # return the dataframe
+    return df
+
+
+
+# Placing all major titles from `major_name` within more concise buckets/categories for dimensionality reduction
+def categorize_major(column):
     if column in ['Botany/Plant Biology.','Agricultural Engineering.','Applied Horticulture and Horticultural Business Services.','Agriculture/Veterinary Preparatory Programs.','Soil Sciences.','Agriculture, General.', 'Agriculture, Agriculture Operations, and Related Sciences, Other.', 'Agricultural Production Operations.', 'Agricultural and Domestic Animal Services.','Agricultural Public Services.','Agricultural Mechanization.','International Agriculture.','Agricultural and Food Products Processing.']:
         return "Agriculture"
     elif column in ['Forest Engineering.','Environmental Control Technologies/Technicians.','Archeology.','Geological/Geophysical Engineering.','Mining and Mineral Engineering.','Natural Resources and Conservation, Other.','Fishing and Fisheries Sciences and Management.','Sustainability Studies.','Historic Preservation and Conservation.','Surveying Engineering.','Ocean Engineering.','Geography and Cartography.','Wildlife and Wildlands Science and Management.','Natural Resources Management and Policy.','Geological and Earth Sciences/Geosciences.','Environmental/Environmental Health Engineering.','Natural Resources Conservation and Research.','Forestry.']:
@@ -270,3 +333,131 @@ def categorize_major(column):
         return "History"
     else:
         return "None"
+
+## Code to apply above function to our df, creating new `major_category` column/feature
+
+# --> new_df['major_category'] = new_df.major_name.apply(categorize_major)
+
+
+# ----------------------------------- #
+
+### Additional Steps to perform merge with `earnings_pivot_merge` df
+
+def earnings_merge(df):
+    # Reading in csv of earnings pivot table (creation of Chenchen)
+    earnings_pivot_merge = pd.read_csv('2017_2018_2019_earning_by_major.csv', index_col=0)
+
+    # Merging cleaned/prepared df with earnings pivot table
+    df = df.merge(earnings_pivot_merge, how='inner', on='major_category')
+
+    return df
+
+
+
+
+
+
+
+
+
+
+# ----------------------------------- #
+
+### Target Variable: ROI ###
+
+''' These features intake calculated median earnings data from our secondary IPUMS dataset by year (`median_earnings_by_degree`), 
+net college cost of a typical 4-yr bachelors degree, and predicted counter earnings had an individual not pursued this degree. 
+It utilizes a standard ROI formula calculation to engineer new ROI vars for 5, 10, and 20 years.
+This is our primary target variable'''
+
+# 5-yr ROI 
+
+def roi_5yr(df):
+
+    # creating median earnings var
+    median_earnings_by_degree_5yr = (df['2017'] + df['2018'] + df['2019'] + df['2019']*1.02 + (df['2019']*1.02)*1.02)
+
+    # net college cost var
+    net_college_cost = df['avg_net_price']
+
+    # counter earnings var (what is the predicted wage an individual would have earned had they foregone pursuing this degree)
+    counter_earnings_5yr = (39070*9)
+
+    # ROI formula calculation
+    df['roi_5yr'] = median_earnings_by_degree_5yr - (net_college_cost+counter_earnings_5yr)
+
+    return df
+
+
+# 10-yr ROI
+
+def roi_10yr(df):
+
+    # creating median earnings var
+    median_earnings_by_degree_10yr = df['2017'] + df['2018'] + df['2019'] + df['2019']*1.02 + (df['2019']*1.02)*1.02 + ((df['2019']*1.02)*1.02)*1.02 + (((df['2019']*1.02)*1.02)*1.02)*1.02 + ((((df['2019']*1.02)*1.02)*1.02)*1.02)*1.02 + (((((df['2019']*1.02)*1.02)*1.02)*1.02)*1.02)*1.02 + ((((((df['2019']*1.02)*1.02)*1.02)*1.02)*1.02)*1.02)*1.02
+
+    # net college cost var
+    net_college_cost = df['avg_net_price']
+
+    # counter earnings var (what is the predicted wage an individual would have earned had they foregone pursuing this degree)
+    counter_earnings_10yr = (39070*14)
+
+    # ROI formula calculation
+    df['roi_10yr'] = median_earnings_by_degree_10yr - (net_college_cost+ counter_earnings_10yr)
+
+    return df
+
+
+# ----------------------------------- #
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ---------------------------------------------------------------- #
+                    ### Train, Validate, Test Split ###
+# ---------------------------------------------------------------- #
+
+
+def split_data(df):
+    train_and_validate, test = train_test_split(
+        df, 
+        test_size = 0.2, 
+        random_state = 123,
+        stratify = df["major_category"])
+
+    train, validate = train_test_split(
+        train_and_validate,
+        test_size = 0.3,
+        random_state = 123,
+        stratify = train_and_validate["major_category"])
+
+    return df
+
+
+                                    
+
+
+
+
+
+
+
+
+
+
