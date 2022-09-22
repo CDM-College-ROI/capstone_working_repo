@@ -142,7 +142,7 @@ def clean_college_df(df):
             "PCIP24": "deg_percent_awarded_general_studies",
             "PCIP25": "deg_percent_awarded_library_sciences",
             "PCIP26": "deg_percent_awarded_bio_sciences",
-            "PCIP27": "deg_percent_awarded_history",
+            "PCIP27": "deg_percent_awarded_mathematics",
             "PCIP29": "deg_percent_awarded_military_tech",
             "PCIP30": "deg_percent_awarded_intedisciplinary_studies",
             "PCIP31": "deg_percent_awarded_leisure_fitness",
