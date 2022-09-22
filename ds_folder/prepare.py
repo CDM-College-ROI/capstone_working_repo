@@ -432,7 +432,7 @@ def roi_10yr(df):
 # ---------------------------------------------------------------- #
                     ### Train, Validate, Test Split ###
 # ---------------------------------------------------------------- #
-
+from sklearn.model_selection import train_test_split 
 
 def split_data(df):
     train_and_validate, test = train_test_split(
@@ -447,10 +447,12 @@ def split_data(df):
         random_state = 123,
         stratify = train_and_validate["major_category"])
 
-    return df
+    return train, validate, test
 
 
-                                    
+
+
+
 
 
 
