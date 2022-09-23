@@ -110,6 +110,7 @@ def apply_fam_income_col(df):
 
     return df
 
+# Call 5 individual assigns within notebook
 def call_bracket_function(df):
     df = get_fam_income_col(df, income_0_30000, "fam_income_0_30000")
     df = get_fam_income_col(df, income_30001_48000, "fam_income_30001_48000")
@@ -152,7 +153,7 @@ def split_data(df):
 
     return train, validate, test
 
-# ---------------------------------------------------------------- #
+# ------------------------------------- #
 
 
 # ---------------------------------------------------------------- #
@@ -257,7 +258,9 @@ def impute_val_and_test(train_df, val_df, test_df):
         "2018",                                                   
         "2019",
         "Grand Total",
-        "avg_net_price"
+        "avg_net_price",
+        "avg_sat_admitted",
+        "ACT_score_mid"
         ]
 
         # recheck cols are not in target list
