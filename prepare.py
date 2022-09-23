@@ -679,7 +679,10 @@ def train_iterative_imputer(train_df):
         "avg_net_price",
         "med_debt_pell_students",
         "median_debt_non_pell",
-        "median_debt_completed"
+        "median_debt_completed",
+        'admission_rate',
+        'ACT_score_mid',
+        'avg_sat_admitted'
     ]
     
     num_lst = [col for col in l1 if col not in target_lst]
@@ -730,7 +733,10 @@ def impute_val_and_test(train_df, val_df, test_df):
         "avg_net_price",
         "med_debt_pell_students",
         "median_debt_non_pell",
-        "median_debt_completed"
+        "median_debt_completed",
+        'admission_rate',
+        'ACT_score_mid',
+        'avg_sat_admitted'
         ]
 
         # recheck cols are not in target list
