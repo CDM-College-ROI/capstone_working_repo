@@ -62,7 +62,7 @@ def get_bach_df():
     If the table is not found, then it checks for the initially needed 
     College Scorecard tables for period 2018-2019.
     
-    The function then filters and returns bachelor degree records.'''
+    The function then filters, saves, and returns bachelor degree records.'''
 
     # checking if dataset exists
     filename = "bach_table.csv"
@@ -76,6 +76,7 @@ def get_bach_df():
         return df
 
     else:
+
         # checks local foldere for following files
         filename_01 = "FieldOfStudyData1718_1819_PP.csv"
         filename_02 = "MERGED2018_19_PP.csv"
@@ -95,9 +96,9 @@ def get_bach_df():
         )
 
         # filters for just bachelor specific records
-        bach_df = df[df["CREDDESC"] == "Bachelors Degree"]
+        bach_df = df[df["CREDDESC"] == "Bachelor’s Degree"]
 
-        # initial filter of columns with >= 50% missing records
+        # # initial filter of columns with >= 50% missing records
         bach_df = bach_df[[ 
                 "UNITID",
                 "INSTNM_x",

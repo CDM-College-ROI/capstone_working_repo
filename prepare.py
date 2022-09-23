@@ -340,7 +340,7 @@ def clean_high_percentage_nulls(df):
     new_df = fill_null_with_mean(new_df)
 
     # print the new df
-    print(f'df shape: {new_df.shape}')
+    print(f'dataframe shape: {new_df.shape}')
 
     # return the new df
     return new_df
@@ -372,7 +372,7 @@ def treat_bach_nulls(df):
                 axis=1, 
                 thresh = min_count)
 
-    print(f'modified df shape: {mod_df.shape}')
+    print(f'modified dataframe shape: {mod_df.shape}')
     
     # return the new df
     return mod_df
@@ -591,7 +591,7 @@ def create_fam_income_columns(df):
         var_name = var_names[i]
         df = get_fam_income_col(df, frames[i], var_name)
 
-    print(f'df shape: {df.shape}')
+    print(f'dataframe shape: {df.shape}')
     
     return df
 
@@ -613,6 +613,10 @@ def split_data(df):
         test_size = 0.3,
         random_state = 123,
         stratify = train_and_validate["major_category"])
+    
+    print(f'train shape: {train.shape}')
+    print(f'validate shape: {validate.shape}')
+    print(f'test shape: {test.shape}')
 
     return train, validate, test
 
@@ -675,7 +679,10 @@ def train_iterative_imputer(train_df):
         "avg_net_price",
         "med_debt_pell_students",
         "median_debt_non_pell",
-        "median_debt_completed"
+        "median_debt_completed",
+        'admission_rate',
+        'ACT_score_mid',
+        'avg_sat_admitted'
     ]
     
     num_lst = [col for col in l1 if col not in target_lst]
@@ -726,7 +733,10 @@ def impute_val_and_test(train_df, val_df, test_df):
         "avg_net_price",
         "med_debt_pell_students",
         "median_debt_non_pell",
-        "median_debt_completed"
+        "median_debt_completed",
+        'admission_rate',
+        'ACT_score_mid',
+        'avg_sat_admitted'
         ]
 
         # recheck cols are not in target list
