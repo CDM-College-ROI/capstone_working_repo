@@ -761,7 +761,42 @@ def impute_val_and_test(train_df, val_df, test_df):
         return validate_imputed, test_imputed
 
 
+def fill_null_with_mean(df):
+    '''fill the null value with avg for each major'''
+    
+    df['admission_rate'] = df.groupby('major_category')['admission_rate'].apply(lambda x:x.fillna(x.mean()))
+    df['ACT_score_mid'] = df.groupby('major_category')['ACT_score_mid'].apply(lambda x:x.fillna(x.mean()))
+    df['avg_sat_admitted'] = df.groupby('major_category')['avg_sat_admitted'].apply(lambda x:x.fillna(x.mean()))
+    
+    return df
 
+def impute_avg_net_price(df):
+    # Impute `avg_net_price` where value = 0; perform split by `institution_control` var (Public, Private For-Profit, Private Non-Profit)
+
+    df.loc[(df.institution_control == 'Public') & (df.avg_net_price == 0), 'avg_net_price'] = 14502
+    df.loc[(df.institution_control == 'Private, nonprofit') & (df.avg_net_price == 0), 'avg_net_price'] = 22961
+    df.loc[(df.institution_control == 'Private, for-profit') & (df.avg_net_price == 0), 'avg_net_price'] = 18640
+
+    return df
+
+def impute_debt(df):
+
+    df['med_debt_pell_students'] = np.where(df['med_debt_pell_students'].isna(), 17500, df['med_debt_pell_students'])
+    df['median_debt_non_pell'] = np.where(df['median_debt_non_pell'].isna(), 14768, df['median_debt_non_pell'])
+    df['median_debt_completed'] = np.where(df['median_debt_completed'].isna(), 23250, df['median_debt_completed'])
+
+    df = df.astype({'med_debt_pell_students': 'int64', 'median_debt_non_pell': 'int64', 'median_debt_completed': 'int64'})
+    
+    return df
+
+
+def manual_imputer(df):
+    # calls all manual imputation functions for important vars
+    df = fill_null_with_mean(df)
+    df = impute_avg_net_price(df)
+    df = impute_debt(df)
+
+    return df
 
 
 
