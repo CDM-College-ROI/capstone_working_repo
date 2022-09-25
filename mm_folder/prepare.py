@@ -307,7 +307,7 @@ def clean_high_percentage_nulls(df):
     '''Function takes in the initial df and 
     cleans for high percentage null value features (>40%).'''
 
-    df = df.dropna(subset=['city'])
+    # df = df.dropna(subset=['city'])
 
     new_df = df.drop(columns = [ 
         'avg_net_price_other',    
