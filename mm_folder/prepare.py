@@ -636,7 +636,7 @@ def percentile_capping(df, low_end = 0.1, high_end = 0.1):
                 "roi_20yr",
                 "pct_roi_5yr",
                 "pct_roi_10yr",
-                "pct_roi_20yr"
+                "pct_roi_20yr",
                 "2017",                                               
                 "2018",                                                   
                 "2019",
@@ -671,7 +671,7 @@ def train_iterative_imputer(train_df):
         "roi_20yr",
         "pct_roi_5yr",
         "pct_roi_10yr",
-        "pct_roi_20yr"
+        "pct_roi_20yr",
         "2017",                                               
         "2018",                                                   
         "2019",
@@ -725,7 +725,7 @@ def impute_val_and_test(train_df, val_df, test_df):
         "roi_20yr",
         "pct_roi_5yr",
         "pct_roi_10yr",
-        "pct_roi_20yr"
+        "pct_roi_20yr",
         "2017",                                               
         "2018",                                                   
         "2019",

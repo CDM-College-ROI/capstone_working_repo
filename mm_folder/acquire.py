@@ -96,9 +96,9 @@ def get_bach_df():
         )
 
         # filters for just bachelor specific records
-        bach_df = df[df["CREDDESC"] == "Bachelor’s Degree"]
+        bach_df = df[df["CREDDESC"] == "Bachelors Degree"]
 
-        # # initial filter of columns with >= 50% missing records
+        # initial filter of columns with >= 50% missing records
         bach_df = bach_df[[ 
                 "UNITID",
                 "INSTNM_x",
