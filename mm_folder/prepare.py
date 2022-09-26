@@ -289,6 +289,14 @@ def clean_college_df(df):
     # create the 'major_category' bin column
     new_df['major_category'] = new_df["major_name"].apply(categorize_major)
 
+    # impute university id with feature mode
+    new_df["unit_id_institution"] = new_df["unit_id_institution"].fillna(new_df["unit_id_institution"].mode()[0])
+
+    # impute missing geographical data with mode
+    new_df["state_post_code"] = new_df["state_post_code"].fillna(new_df["state_post_code"].mode()[0])
+    new_df["city"] = new_df["city"].fillna(new_df["city"].mode()[0])
+    new_df["zip_code"] = new_df["zip_code"].fillna(new_df["zip_code"].mode()[0])
+
     return new_df
 
 
@@ -702,9 +710,6 @@ def train_iterative_imputer(train_df):
     # filling in missing values from learned imputer
     train_df[num_lst] = train_df_imputed
 
-    # fill-in missing zip codes
-    train_df["zip_code"] = train_df["zip_code"].fillna(train_df["zip_code"].mode()[0])
-
     # return the new imputed df
     return train_df
 
@@ -762,11 +767,6 @@ def impute_val_and_test(train_df, val_df, test_df):
         test_df[num_lst] = test_imputed
         test_imputed = test_df
 
-        # fill-in any instances of missing zip-code values
-        validate_imputed["zip_code"] = validate_imputed["zip_code"].fillna(validate_imputed["zip_code"].mode()[0])
-        test_imputed["zip_code"] = test_imputed["zip_code"].fillna(test_imputed["zip_code"].mode()[0])
-
-
         # returning the imputed validate and test datasets
         return validate_imputed, test_imputed
 
@@ -810,10 +810,138 @@ def manual_imputer(df):
 
 
 
+def label_states(row):
+    '''Function that creates state bin / us region category''' 
+
+    if row['state_post_code'] in ['GU', 'VI', 'PR',	'MP', 'FM',	'MH', 'AS']:
+
+        return "us_foreign"
+
+    elif row['state_post_code'] in ['CA', 'AK', 'OR', 'WA', 'HI']:
+
+        return "west_pacific"
+
+    elif row['state_post_code'] in ['MT', 'AZ', 'CO', 'ID', 'NV', 'NM', 'UT']:
+
+        return "west_mountain"
+    
+    elif row['state_post_code'] in ['ND', 'SD', 'MN', 'NE', 'IA', 'KS', 'MO', 'WY']:
+
+        return "midwest_north_central"
+
+    elif row['state_post_code'] in ['OK',	'AR', 'TX', 'LA']:
+
+        return "midwest_south_central"
+
+    elif row['state_post_code'] in ['MI', 'WI', 'IL', 'IN', 'OH']:
+
+        return "east_north_central"
+
+    elif row['state_post_code'] in ['KY', 'TN', 'MS',	'AL']:
+
+        return "east_south_central"
+
+    elif row['state_post_code'] in ['NY', 'PA', 'NJ']:
+
+        return "east_north_atlantic"
+
+    elif row['state_post_code'] in ['WV', 'MD', 'DE', 'VA', 'DC', 'NC', 'SC', 'GA', 'FL']:
+
+        return "east_south_atlantic"
+   
+    elif row['state_post_code'] in ['CT', 'MA', 'ME', 'NH', 'ME', 'RI', 'VT']:
+
+        return "east_south_atlantic"
+
+    else:
+
+        return np.NaN
+
+
+def get_share_bins(train_df, val_df, test_df):
+
+    train_df['share_entering_ft_binned'] = pd.qcut(
+    train_df['share_entering_students_first_ft'], \
+    q = 4, \
+    labels = ["below_average", "average", "above_average", "highest_average"])
+
+    train_df['admission_rate_binned'] = pd.qcut(
+    train_df['admission_rate'], \
+    q = 5, \
+    labels = ["very_competitive", "somewhat_competitive", "competitive", "average_acceptance", "above_average_acceptance"])
+
+    val_df['share_entering_ft_binned'] = pd.qcut(
+        val_df['share_entering_students_first_ft'], \
+        q = 4, \
+        labels = ["below_average", "average", "above_average", "highest_average"])
+
+    val_df['admission_rate_binned'] = pd.qcut(
+    val_df['admission_rate'], \
+    q = 5, \
+    labels = ["very_competitive", "somewhat_competitive", "competitive", "average_acceptance", "above_average_acceptance"])
+
+
+    test_df['share_entering_ft_binned'] = pd.qcut(
+        test_df['share_entering_students_first_ft'], \
+        q = 4, \
+        labels = ["below_average", "average", "above_average", "highest_average"])
+
+    test_df['admission_rate_binned'] = pd.qcut(
+    test_df['admission_rate'], \
+    q = 5, \
+    labels = ["very_competitive", "somewhat_competitive", "competitive", "average_acceptance", "above_average_acceptance"])
+
+    print(f'train shape: {train_df.shape}')
+    print(f'validate shape: {val_df.shape}')
+    print(f'test shape: {test_df.shape}')
+
+    # return the transformed datasets
+    return train_df, val_df, test_df
 
 
 
+def get_dummy_dataframes(train_df, val_df, test_df):
+    '''Function creates new dataframes with dummy variables for modeling'''
 
+    # train dataset
+    train_dummy = pd.get_dummies(
+        data = train_df, 
+        columns = [
+        'major_category',
+        'share_entering_ft_binned',
+        'institution_control',
+        'us_region',
+        'admission_rate_binned'],
+        drop_first = False, 
+        dtype = bool)
 
+    # validate dataset
+    val_dummy = pd.get_dummies(
+        data = val_df, 
+        columns = [
+        'major_category',
+        'share_entering_ft_binned',
+        'institution_control',
+        'us_region',
+        'admission_rate_binned'],
+        drop_first = False, 
+        dtype = bool)
 
+    # test dataset
+    test_dummy = pd.get_dummies(
+        data = test_df, 
+        columns = [
+        'major_category',
+        'share_entering_ft_binned',
+        'institution_control',
+        'us_region',
+        'admission_rate_binned'],
+        drop_first = False, 
+        dtype = bool)
 
+    print(f'train shape: {train_dummy.shape}')
+    print(f'validate shape: {val_dummy.shape}')
+    print(f'test shape: {test_dummy.shape}')
+
+    # returning the datasets
+    return train_dummy, val_dummy, test_dummy
