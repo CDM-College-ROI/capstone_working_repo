@@ -88,15 +88,15 @@ def get_bach_df():
         df_parent["UNITID"] = df_parent["UNITID"].astype("Int32", errors="ignore")
         df_child["UNITID"] = df_child["UNITID"].astype("Int32", errors="ignore")
 
-        df = df_parent.merge( 
-        df_child,
-        how = "left",
-        on = "UNITID",
-        copy = False
-        )
+        df = df_parent.merge(
+            df_child,
+            how = "left",
+            on = "UNITID",
+            copy = False
+            )
 
         # filters for just bachelor specific records
-        bach_df = df[df["CREDDESC"] == "Bachelor’s Degree"]
+        bach_df = df[df["CREDDESC"] == "Bachelors Degree"]
 
         # # initial filter of columns with >= 50% missing records
         bach_df = bach_df[[ 
