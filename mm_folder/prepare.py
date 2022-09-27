@@ -13,13 +13,16 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set()
 
-from sklearn.model_selection import train_test_split 
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
 from scipy.stats.mstats import winsorize
 
 # !iterative imputer must follow this import sequence!
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 
+from sklearn.feature_selection import RFE
+from sklearn.linear_model import LinearRegression, LassoLars, TweedieRegressor, LogisticRegression
 
 # data processing functions for dept. of education - college scorecard dataset
 # ---------------------------------------------------------------- #
@@ -860,6 +863,7 @@ def label_states(row):
 
 def get_share_bins(train_df, val_df, test_df):
 
+    # train transformations
     train_df['share_entering_ft_binned'] = pd.qcut(
     train_df['share_entering_students_first_ft'], \
     q = 4, \
@@ -870,6 +874,12 @@ def get_share_bins(train_df, val_df, test_df):
     q = 5, \
     labels = ["very_competitive", "somewhat_competitive", "competitive", "average_acceptance", "above_average_acceptance"])
 
+    train_df["SAT_binned"] = pd.qcut(
+    train_df['avg_sat_admitted'], \
+    q = 4, \
+    labels = ["average_sat", "above_average_sat", "competitive_sat", "very_competitive_sat"])
+
+    # validate transformations
     val_df['share_entering_ft_binned'] = pd.qcut(
         val_df['share_entering_students_first_ft'], \
         q = 4, \
@@ -880,7 +890,12 @@ def get_share_bins(train_df, val_df, test_df):
     q = 5, \
     labels = ["very_competitive", "somewhat_competitive", "competitive", "average_acceptance", "above_average_acceptance"])
 
+    val_df["SAT_binned"] = pd.qcut(
+    val_df['avg_sat_admitted'], \
+    q = 4, \
+    labels = ["average_sat", "above_average_sat", "competitive_sat", "very_competitive_sat"])
 
+    # test transformations
     test_df['share_entering_ft_binned'] = pd.qcut(
         test_df['share_entering_students_first_ft'], \
         q = 4, \
@@ -890,6 +905,12 @@ def get_share_bins(train_df, val_df, test_df):
     test_df['admission_rate'], \
     q = 5, \
     labels = ["very_competitive", "somewhat_competitive", "competitive", "average_acceptance", "above_average_acceptance"])
+
+    test_df["SAT_binned"] = pd.qcut(
+    test_df['avg_sat_admitted'], \
+    q = 4, \
+    labels = ["average_sat", "above_average_sat", "competitive_sat", "very_competitive_sat"])
+
 
     print(f'train shape: {train_df.shape}')
     print(f'validate shape: {val_df.shape}')
@@ -911,7 +932,8 @@ def get_dummy_dataframes(train_df, val_df, test_df):
         'share_entering_ft_binned',
         'institution_control',
         'us_region',
-        'admission_rate_binned'],
+        'admission_rate_binned',
+        'SAT_binned'],
         drop_first = False, 
         dtype = bool)
 
@@ -923,7 +945,8 @@ def get_dummy_dataframes(train_df, val_df, test_df):
         'share_entering_ft_binned',
         'institution_control',
         'us_region',
-        'admission_rate_binned'],
+        'admission_rate_binned',
+        'SAT_binned'],
         drop_first = False, 
         dtype = bool)
 
@@ -935,7 +958,8 @@ def get_dummy_dataframes(train_df, val_df, test_df):
         'share_entering_ft_binned',
         'institution_control',
         'us_region',
-        'admission_rate_binned'],
+        'admission_rate_binned',
+        'SAT_binned'],
         drop_first = False, 
         dtype = bool)
 
@@ -945,3 +969,101 @@ def get_dummy_dataframes(train_df, val_df, test_df):
 
     # returning the datasets
     return train_dummy, val_dummy, test_dummy
+
+
+def get_cluster_dummy(train_df, val_df, test_df):
+    '''After clustering, this function intends to create dummy variables for
+    clusters to assist in modeling'''
+
+    # train dataset
+    train_dummy = pd.get_dummies(data = train_df, columns = [
+        'admission_clusters_5yr',
+        'control_clusters_5yr',
+        'region_clusters_5yr',
+        'ft_clusters_5yr',
+        'major_clusters_5yr',
+        'sat_clusters_5yr'
+        ],
+        drop_first = False, 
+        dtype = bool)
+
+    # validate dataset
+    validate_dummy = pd.get_dummies(data = val_df, columns = [
+        'admission_clusters_5yr',
+        'control_clusters_5yr',
+        'region_clusters_5yr',
+        'ft_clusters_5yr',
+        'major_clusters_5yr',
+        'sat_clusters_5yr'],
+        drop_first = False, 
+        dtype = bool)
+
+    # test dataset
+    test_dummy = pd.get_dummies(data = test_df, columns = [
+        'admission_clusters_5yr',
+        'control_clusters_5yr',
+        'region_clusters_5yr',
+        'ft_clusters_5yr',
+        'major_clusters_5yr',
+        'sat_clusters_5yr'],
+        drop_first = False, 
+        dtype = bool)
+
+    # returning the new dataframes
+    return train_dummy, validate_dummy, test_dummy
+
+
+def establish_baseline(train, validate):
+    '''function that establishes a baseline for train and validate - 
+    will be used for model comparison'''
+
+    baseline_train = round(train["roi_5yr"].mean(), 4)
+    baseline_val = round(validate["roi_5yr"].mean(), 4)
+
+    train['baseline'] = baseline_train
+    validate['baseline'] = baseline_val
+
+    train_rmse = sqrt(mean_squared_error(train.roi_5yr, train.baseline))
+    validate_rmse = sqrt(mean_squared_error(validate.roi_5yr, validate.baseline))
+
+    print('Train baseline RMSE: {:.2f}'.format(train_rmse))
+    print('Validate baseline RMSE: {:.2f}'.format(validate_rmse))
+
+    train = train.drop(columns = "baseline")
+    validate = validate.drop(columns = "baseline")
+
+    print()
+    print(f'train shape: {train.shape}')
+    print(f'validate shape: {validate.shape}')
+
+    return train, validate
+
+def recursive_feature_eliminate(X_train, y_train, number_of_top_features):
+    '''Creating a recursive feature eliminate function'''
+    
+    # initialize the ML algorithm
+    lm = LinearRegression()
+
+    rfe = RFE(lm, n_features_to_select = number_of_top_features)
+
+    # fit the data using RFE
+    rfe.fit(X_train, y_train) 
+
+    # get the mask of the columns selected
+    feature_mask = rfe.support_
+
+    # get list of the column names
+    rfe_features = X_train.iloc[:,feature_mask].columns.tolist()
+
+    # view list of columns and their ranking
+    # get the ranks using "rfe.ranking" method
+    variable_ranks = rfe.ranking_
+
+    # get the variable names
+    variable_names = X_train.columns.tolist()
+
+    # combine ranks and names into a df for clean viewing
+    rfe_ranks_df = pd.DataFrame({'Feature': variable_names, 'Ranking': variable_ranks})
+
+    # sort the df by rank
+    return rfe_ranks_df.sort_values('Ranking')
