@@ -300,6 +300,10 @@ def clean_college_df(df):
     new_df["city"] = new_df["city"].fillna(new_df["city"].mode()[0])
     new_df["zip_code"] = new_df["zip_code"].fillna(new_df["zip_code"].mode()[0])
 
+    # updating median debt non-first generation dtype to int and replacing null w. median value
+    new_df.loc[new_df['median_debt_non_first_generation'].notnull(), 'median_debt_non_first_generation'] = new_df.loc[df['median_debt_non_first_generation'].notnull(), 'median_debt_non_first_generation'].apply(int)
+    new_df["median_debt_non_first_generation"] = new_df["median_debt_non_first_generation"].fillna(new_df["median_debt_non_first_generation"].median())
+
     return new_df
 
 
@@ -606,7 +610,55 @@ def create_fam_income_columns(df):
     
     return df
 
+# ---------------------------------- #
 
+# Creating region categories from `state_post_code`
+def label_states(row):
+    '''Function that creates state bin / us region category''' 
+
+    if row['state_post_code'] in ['GU', 'VI', 'PR',	'MP', 'FM',	'MH', 'AS']:
+
+        return "us_foreign"
+
+    elif row['state_post_code'] in ['CA', 'AK', 'OR', 'WA', 'HI']:
+
+        return "west_pacific"
+
+    elif row['state_post_code'] in ['MT', 'AZ', 'CO', 'ID', 'NV', 'NM', 'UT']:
+
+        return "west_mountain"
+    
+    elif row['state_post_code'] in ['ND', 'SD', 'MN', 'NE', 'IA', 'KS', 'MO', 'WY']:
+
+        return "midwest_north_central"
+
+    elif row['state_post_code'] in ['OK', 'AR', 'TX', 'LA']:
+
+        return "midwest_south_central"
+
+    elif row['state_post_code'] in ['MI', 'WI', 'IL', 'IN', 'OH']:
+
+        return "east_north_central"
+
+    elif row['state_post_code'] in ['KY', 'TN', 'MS',	'AL']:
+
+        return "east_south_central"
+
+    elif row['state_post_code'] in ['NY', 'PA', 'NJ']:
+
+        return "east_north_atlantic"
+
+    elif row['state_post_code'] in ['WV', 'MD', 'DE', 'VA', 'DC', 'NC', 'SC', 'GA', 'FL']:
+
+        return "east_south_atlantic"
+   
+    elif row['state_post_code'] in ['CT', 'MA', 'ME', 'NH', 'ME', 'RI', 'VT']:
+
+        return "east_south_atlantic"
+
+    else:
+
+        return np.NaN
 
 # ---------------------------------------------------------------- #
                     ### Train, Validate, Test Split ###
@@ -813,53 +865,11 @@ def manual_imputer(df):
 
 
 
-def label_states(row):
-    '''Function that creates state bin / us region category''' 
 
-    if row['state_post_code'] in ['GU', 'VI', 'PR',	'MP', 'FM',	'MH', 'AS']:
 
-        return "us_foreign"
 
-    elif row['state_post_code'] in ['CA', 'AK', 'OR', 'WA', 'HI']:
 
-        return "west_pacific"
-
-    elif row['state_post_code'] in ['MT', 'AZ', 'CO', 'ID', 'NV', 'NM', 'UT']:
-
-        return "west_mountain"
-    
-    elif row['state_post_code'] in ['ND', 'SD', 'MN', 'NE', 'IA', 'KS', 'MO', 'WY']:
-
-        return "midwest_north_central"
-
-    elif row['state_post_code'] in ['OK', 'AR', 'TX', 'LA']:
-
-        return "midwest_south_central"
-
-    elif row['state_post_code'] in ['MI', 'WI', 'IL', 'IN', 'OH']:
-
-        return "east_north_central"
-
-    elif row['state_post_code'] in ['KY', 'TN', 'MS',	'AL']:
-
-        return "east_south_central"
-
-    elif row['state_post_code'] in ['NY', 'PA', 'NJ']:
-
-        return "east_north_atlantic"
-
-    elif row['state_post_code'] in ['WV', 'MD', 'DE', 'VA', 'DC', 'NC', 'SC', 'GA', 'FL']:
-
-        return "east_south_atlantic"
-   
-    elif row['state_post_code'] in ['CT', 'MA', 'ME', 'NH', 'ME', 'RI', 'VT']:
-
-        return "east_south_atlantic"
-
-    else:
-
-        return np.NaN
-
+# ------------------------------------------------ #
 
 def get_share_bins(train_df, val_df, test_df):
 
