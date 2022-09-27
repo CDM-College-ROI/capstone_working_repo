@@ -832,7 +832,7 @@ def label_states(row):
 
         return "midwest_north_central"
 
-    elif row['state_post_code'] in ['OK',	'AR', 'TX', 'LA']:
+    elif row['state_post_code'] in ['OK', 'AR', 'TX', 'LA']:
 
         return "midwest_south_central"
 
