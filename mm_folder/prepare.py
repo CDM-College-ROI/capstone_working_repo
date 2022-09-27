@@ -1067,3 +1067,71 @@ def recursive_feature_eliminate(X_train, y_train, number_of_top_features):
 
     # sort the df by rank
     return rfe_ranks_df.sort_values('Ranking')
+
+
+def get_melted_table(df):
+  '''Function to create a melted model column to help with plotting'''
+
+  baseline = df["baseline_mean_predictions"].median()
+    
+  df1 = df[[
+    'roi_5yr',
+    'linear_predictions', 
+    'lars_predictions', 
+    'tweedie_predictions']]
+  
+  melt_df = df1.melt("roi_5yr", var_name = 'cols',
+                  value_name = 'vals')
+  
+  melt_df["baseline_prediction"] = baseline
+  melt_df["residual"] = melt_df["roi_5yr"] - melt_df['vals']
+
+  return melt_df
+
+
+def plot_model_residuals(melt_df):
+    '''Model Residual (error) Plot'''
+
+    plt.figure(figsize=(16,8))
+    plt.axhline(label='_nolegend_', 
+                color = 'purple',
+                ls = ':')
+
+    ax = sns.scatterplot(data = melt_df.sample(100, random_state = 123), 
+                x = 'roi_5yr', 
+                y = 'residual',
+                hue = 'cols',
+                y_jitter = .5,
+                x_jitter = .5,
+                s = 50)
+
+    legend = ax.legend()
+    plt.legend()
+    plt.xlabel('Actual Actual 5YR Return on Investment')
+    plt.ylabel('Residual - 5YR Return on Investment')
+    plt.title('Model Residual Plot')
+    plt.show()
+
+def plot_models(melt_df):
+        '''Plotting actual 5yr roi, baseline_predictions, and model predictions'''
+        plt.figure(figsize = (16, 8))
+        plt.plot(melt_df['roi_5yr'], melt_df['baseline_prediction'], alpha=0.5,
+        color='gray', ls = ':', label='_nolegend_')
+
+        plt.plot(melt_df['roi_5yr'], melt_df['roi_5yr'], alpha=0.5,
+        color='blue', label = '_nolegend_')
+
+        ax = sns.scatterplot(data = melt_df.sample(300, random_state = 123), 
+                x = 'roi_5yr', 
+                y = "vals", 
+                hue = 'cols',
+                y_jitter = .5,
+                x_jitter = .5,
+                s = 50)
+
+        legend = ax.legend()
+        plt.legend()
+        plt.xlabel("Actual 5YR Return on Investment")
+        plt.ylabel('Predicted 5YR Return on Investment')
+        plt.title('Actual 5YR Return on Investment vs Predicted Cluster 5YR Return on Investment')
+        plt.show()
