@@ -307,8 +307,8 @@ def clean_college_df(df):
     new_df["zip_code"] = new_df["zip_code"].fillna(new_df["zip_code"].mode()[0])
 
     # updating median debt non-first generation dtype to int and replacing null w. median value
-    # new_df.loc[new_df['median_debt_non_first_generation'].notnull(), 'median_debt_non_first_generation'] = new_df.loc[df['median_debt_non_first_generation'].notnull(), 'median_debt_non_first_generation'].apply(int)
-    # new_df["median_debt_non_first_generation"] = new_df["median_debt_non_first_generation"].fillna(new_df["median_debt_non_first_generation"].median())
+    new_df.loc[new_df['median_debt_non_first_generation'].notnull(), 'median_debt_non_first_generation'] = new_df.loc[new_df['median_debt_non_first_generation'].notnull(), 'median_debt_non_first_generation'].apply(int)
+    new_df['median_debt_non_first_generation'] = new_df['median_debt_non_first_generation'].fillna(new_df['median_debt_non_first_generation'].median())
 
     return new_df
 
